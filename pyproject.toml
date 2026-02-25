@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-numpy = "1.22"
+numpy = "^1.22"
 matplotlib = "3.7"
 pytimedinput = "^2.0.1"
 

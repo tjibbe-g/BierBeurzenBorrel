@@ -20,7 +20,7 @@ balance = 0
 inventory = {}
 time_stamps = [time.time()]
 timeout = 10
-min_balance = -500
+min_balance = -5000
 max_balance = 500
 
 
@@ -55,7 +55,9 @@ def update_prices(drink: Drink, amount: int, balance):
     """
     if drink == None:
         for value in inventory.values():
-            price_change = random.gauss(3, 8)
+            fraction_left = value.nr_drinks / value.initial_nr_drinks  # percentage of original nr of drinks
+            volatility = 1 + (1 - fraction_left) /2
+            price_change = random.gauss(3, 8 ** volatility)
 
             # extra compensation for out of bounds balance
             if balance > max_balance and value.historic_prices[-1] > 0.8 * value.starting_price:
@@ -63,8 +65,11 @@ def update_prices(drink: Drink, amount: int, balance):
             elif balance < min_balance and value.historic_prices[-1] < 1.2*value.starting_price:
                 value.modify_price(True, price_change, 0)
             else:
-                value.modify_price(False, price_change, 0)
-
+                neg_or_pos = random.uniform(0, 1)
+                if neg_or_pos < 0.8:
+                    value.modify_price(False, price_change, 0)
+                else: 
+                    value.modify_price(False, -price_change, 0)
     else:
         for value in inventory.values():
             if value == drink:
